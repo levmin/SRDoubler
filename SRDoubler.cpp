@@ -21,8 +21,9 @@
 #include <iostream>
 #include <libsndfile\include\sndfile.h>
 
-const size_t TABLE_WIDTH = 3200;         //width of a filter table
-const double ALPHA = 9;                  //parameter of a Kaiser function
+static_assert(true);
+constexpr size_t TABLE_WIDTH = 3200;         //width of a filter table
+constexpr double ALPHA = 9;                  //parameter of a Kaiser function
 
 int main(int argc, char ** argv)
 {
@@ -64,7 +65,7 @@ int main(int argc, char ** argv)
    cout << info_in.frames << " audio frames read\n";
 
    //create an appropriate Keiser window filter
-   const static CFilter<TABLE_WIDTH> KEISER_FILTER{ ALPHA};
+   CONSTEXPR static CFilter<TABLE_WIDTH> KEISER_FILTER{ ALPHA};
 
    FrameSpan sine_wave_span { input };
    SRDoublerType doubler{ sine_wave_span ,KEISER_FILTER };
@@ -96,7 +97,7 @@ int main(int argc, char ** argv)
    sf_close(out);
    if (rc != info_out.frames)
    {
-      cout << "Failure to save upsampled data\n";
+       cout << "Failure to save upsampled data\n";
       return -1;
    }
    else

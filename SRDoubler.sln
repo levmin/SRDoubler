@@ -1,22 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SRDoubler", "SRDoubler.vcxproj", "{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Deb_MSVC|x64 = Deb_MSVC|x64
+		Deb_MSVC|x86 = Deb_MSVC|x86
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Rel_MSVC|x64 = Rel_MSVC|x64
+		Rel_MSVC|x86 = Rel_MSVC|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Deb_MSVC|x64.ActiveCfg = Deb_MSVC|x64
+		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Deb_MSVC|x64.Build.0 = Deb_MSVC|x64
+		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Deb_MSVC|x86.ActiveCfg = Deb_MSVC|Win32
+		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Deb_MSVC|x86.Build.0 = Deb_MSVC|Win32
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Debug|x64.ActiveCfg = Debug|x64
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Debug|x64.Build.0 = Debug|x64
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Debug|x86.ActiveCfg = Debug|Win32
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Debug|x86.Build.0 = Debug|Win32
+		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_MSVC|x64.ActiveCfg = Rel_MSVC|x64
+		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_MSVC|x64.Build.0 = Rel_MSVC|x64
+		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_MSVC|x86.ActiveCfg = Rel_MSVC|Win32
+		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_MSVC|x86.Build.0 = Rel_MSVC|Win32
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Release|x64.ActiveCfg = Release|x64
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Release|x64.Build.0 = Release|x64
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Release|x86.ActiveCfg = Release|Win32
