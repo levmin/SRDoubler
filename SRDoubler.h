@@ -19,51 +19,19 @@
 
 #include <gsl\span>
 #include <vector>
+#include <array>
 
 using namespace std;
 
 constexpr double PI = 3.14159265358979323846264338327950288L;
 constexpr double EPS = 10E-16;
 
-#define TEST_FOR_CONSTEXPR_SUPPORT 
+//#define TEST_FOR_CONSTEXPR_SUPPORT 
 
 #if !defined(TEST_FOR_CONSTEXPR_SUPPORT) || (defined(__cpp_constexpr) && __cpp_constexpr >= 201603)
 
 #define USE_CONSTEXPR 1
 #define CONSTEXPR constexpr
-
-template<class _Ty,  size_t _Size>
-   class fixed_size_array
-{	
-public:
-   
-   constexpr fixed_size_array(const _Ty& _Value) { for (_Ty& elem : _Elems) elem = _Value; }
-
-   constexpr _Ty * begin()
-   {	
-      return _Elems;
-   }
-
-   constexpr _Ty * end()
-   {	
-      return _Elems +_Size;
-   }
-
-   constexpr size_t size() const
-   {
-      return _Size;
-   }
-
-   constexpr const _Ty&  operator[](size_t _Pos) const
-   {	
-      return (_Elems[_Pos]);
-   }
-
-private:
-
-   _Ty _Elems[_Size];
-};
-
 
 inline constexpr double powerOfTen(int num) {
    double rst = 1.0;
@@ -196,7 +164,6 @@ constexpr inline  void assign(_FwdIt _First, _FwdIt _Last, _Fn0& _Func)
 #define CONSTEXPR 
 #define SQRT sqrt
 #define SIN  sin
-#define fixed_size_array array
 #define GENERATE generate
 #endif
 
@@ -267,15 +234,12 @@ from 0 to halfWidth+1, for arguments from 0.5 to halfWidth-0.5,
 multiplied by the values of a sinc function for the same arguments.
 */
 
-template <size_t table_width> class CFilter : public fixed_size_array<double, table_width>
+template <size_t table_width> class CFilter : public array<double, table_width> 
 {
 public:
-   CONSTEXPR CFilter(double alpha)  
-#if USE_CONSTEXPR
-       : fixed_size_array<double, table_width> (0)
-#endif
+   CONSTEXPR CFilter(double alpha) :  array<double, table_width>()
    {
-      using array_type = fixed_size_array<double, table_width>;
+	  using array_type = array <double, table_width>;
       static_assert(table_width % 2 == 0, "Table_width should be an even number");
       size_t halfWidth = table_width / 2;
 
@@ -283,13 +247,22 @@ public:
       size_t i = 0;
       auto  lambda = [&]() 
       {
-         size_t dist = (i < halfWidth) ? (halfWidth - i - 1) : (i - halfWidth);
+#ifdef __FUNCDNAME__   //walkaround for Microsoft compiler bug with tetriary operators in constexpr lambdas
+		 size_t dist = 0;
+		 if (i < halfWidth)
+			dist = halfWidth - i - 1;
+		 else
+			dist = i - halfWidth;
+#else
+		 size_t dist = (i < halfWidth) ? (halfWidth - i - 1) : (i - halfWidth);
+#endif
          i++;
          return KaiserMappedOverIntegerRange(dist + 0.5, alpha, 0, halfWidth + 1)*sinc(dist + 0.5);
       };
       GENERATE(array_type::begin(),array_type::end(),lambda);
    }
 };
+
 
 template<typename SampleFormat, uint8_t numChannels, size_t table_width> class SRDoubler
 {

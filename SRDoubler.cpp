@@ -21,7 +21,6 @@
 #include <iostream>
 #include <libsndfile\include\sndfile.h>
 
-static_assert(true);
 constexpr size_t TABLE_WIDTH = 3200;         //width of a filter table
 constexpr double ALPHA = 9;                  //parameter of a Kaiser function
 
