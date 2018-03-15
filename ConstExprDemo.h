@@ -1,7 +1,7 @@
 /*
-   Sample Rate Doubler
+   constexprDemo
 
-   This program takes a file with a digital audio stream and produces a file with the same stream having a doubled sampling frequency
+   This program shows how to use constexpr C++ functionality for compile-time calculation of digital filter coefficients
 
    Copyright © 2018 Lev Minkovsky
 
@@ -22,53 +22,52 @@
 #include <array>
 #include <cmath>
 #include <algorithm>
-#include <exception>
+#include <stdexcept>
 
 constexpr double PI = 3.14159265358979323846264338327950288L;
 
-#ifndef DEMO_ONLY
-   #define DEMO_ONLY 1
-#endif
-
-#ifndef TEST_FOR_CONSTEXPR_SUPPORT 
+/*
+   Compiler analysis
+*/
+#ifndef TEST_FOR_constexpr_SUPPORT 
    #ifdef __FUNCDNAME__ //don't test with Microsoft compiler
-      #define TEST_FOR_CONSTEXPR_SUPPORT 0
+      #define TEST_FOR_constexpr_SUPPORT 0
    #else
-      #define TEST_FOR_CONSTEXPR_SUPPORT 1
+      #define TEST_FOR_constexpr_SUPPORT 1
    #endif
 #endif
 
-#if TEST_FOR_CONSTEXPR_SUPPORT 
+#if TEST_FOR_constexpr_SUPPORT 
    #if defined(__cpp_constexpr)
-      #define USE_CONSTEXPR 1
       #if __cpp_constexpr < 201603 //Compiler constexpr support is not sufficient
          #pragma message("\n")
          #pragma message("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!\n")
          #pragma message("constexpr lambda expressions are not available. Compiling without the lambdas\n")
          #pragma message("\n")
-         #define USE_CONSTEXPR_LAMBDA 0
+         #define USE_constexpr_LAMBDA 0
       #else
-         #define USE_CONSTEXPR_LAMBDA 1
+         #define USE_constexpr_LAMBDA 1
       #endif
    #else
-      #pragma message("\n")
-      #pragma message("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!\n")
-      #pragma message("__cpp_constexpr is not defined. Compiling without constexpr\n")
-      #pragma message("\n")
-      #define USE_CONSTEXPR 0
-      #define USE_CONSTEXPR_LAMBDA 0
+      #error "__cpp_constexpr is not defined!"
    #endif
 #else
-   #define USE_CONSTEXPR 1
-   #define USE_CONSTEXPR_LAMBDA 1
+   #define USE_constexpr_LAMBDA 0
 #endif
 
 
-#if USE_CONSTEXPR
+/*
+   constexpr functions
+*/
 
 namespace constexpr_funcs {
 
-#if !USE_CONSTEXPR_LAMBDA
+   inline constexpr double abs(double x)
+   {
+      return (x >= 0) ? x : -x;
+   }
+
+#if !USE_constexpr_LAMBDA
    inline constexpr double powerOfTen(int num)
    {
       double rst = 1.0;
@@ -98,7 +97,7 @@ namespace constexpr_funcs {
       int max = 8;	// to define maximum digit 
       double j = 1.0;
 
-#if USE_CONSTEXPR_LAMBDA
+#if USE_constexpr_LAMBDA
       constexpr auto powerOfTen = [](int num) -> double
       {
          double rst = 1.0;
@@ -217,25 +216,10 @@ namespace constexpr_funcs {
    }
 }
 
-#define CONSTEXPR constexpr
-#define NAMESPACE constexpr_funcs
-
-#else
-
-#define CONSTEXPR 
-#define NAMESPACE std
-
-#endif
-
-inline void RaiseEx(const char * message)
-{
-   throw std::runtime_error(message);
-}
-
 /* Functions necessary for the KEISER_FILTER */
 
 // zero-th order modified Bessel function of the first kind
-inline CONSTEXPR double I0(double z)
+inline constexpr double I0(double z)
 {
    const double EPS = 10E-16;
 
@@ -257,73 +241,34 @@ inline CONSTEXPR double I0(double z)
 }
 
 //Keiser window function for a floating point argument
-inline CONSTEXPR  double Kaiser(double x, double alpha)
+inline constexpr  double Kaiser(double x, double alpha)
 {
    if (x < 0.)
       return 1.;
    else if (x > 1.)
       return 0.;
    else
-      return I0(alpha*NAMESPACE::sqrt(1. - x*x)) / I0(alpha);
+      return I0(alpha*constexpr_funcs::sqrt(1. - x*x)) / I0(alpha);
 }
 
 
 //A standard Keiser function goes from 1 to 0 when its argument goes from 0 to 1
 //The mapped function does this when its argument goes from n0 to n1 
-inline CONSTEXPR  double KaiserMappedOverIntegerRange(double x, double alpha, size_t n0, size_t n1)
+inline constexpr  double KaiserMappedOverIntegerRange(double x, double alpha, size_t n0, size_t n1)
 {
    if (n0 != n1)
       return Kaiser((x - n0) / (n1 - n0), alpha);
    else
-   {
-      RaiseEx("Wrong KaiserMappedOverIntegerRange params");
-      return 0.;
-   }
+      throw std::runtime_error("Wrong KaiserMappedOverIntegerRange params");
 }
 
-inline CONSTEXPR double sinc(double x)
+inline constexpr double sinc(double x)
 {
    if (x == 0.)
       return 1.;
    else
-      return NAMESPACE::sin(PI*x) / (PI*x);
+      return constexpr_funcs::sin(PI*x) / (PI*x);
 }
-
-#ifdef DEMO_ONLY
-namespace non_constexpr_funcs {
-
-   inline double sinc(double x)
-   {
-      if (x == 0.)
-         return 1.;
-      else
-         return std::sin(PI*x) / (PI*x);
-   }
-
-   inline double Kaiser(double x, double alpha)
-   {
-      if (x < 0.)
-         return 1.;
-      else if (x > 1.)
-         return 0.;
-      else
-         return I0(alpha*std::sqrt(1. - x * x)) / I0(alpha);
-   }
-
-   inline double KaiserMappedOverIntegerRange(double x, double alpha, size_t n0, size_t n1)
-   {
-      if (n0 != n1)
-         return Kaiser((x - n0) / (n1 - n0), alpha);
-      else
-      {
-         RaiseEx("Wrong KaiserMappedOverIntegerRange params");
-         return 0.;
-      }
-   }
-
-}
-
-#endif
 
 /* Keiser window filter
 The class allocates a 16-byte aligned double array and fills
@@ -336,12 +281,12 @@ template <size_t table_width> class CFilter : public std::array<double, table_wi
 {
 public:
    using array_type = std::array <double, table_width>;
-   CONSTEXPR CFilter(double alpha) : array_type()
+   constexpr CFilter(double alpha) : array_type()
    {
       static_assert(table_width % 2 == 0, "Table_width should be an even number");
       size_t halfWidth = table_width / 2;
 
-#if USE_CONSTEXPR_LAMBDA
+#if USE_constexpr_LAMBDA
       //calculate the coefficients
       size_t i = 0;
       auto  lambda = [&]()
@@ -357,11 +302,11 @@ public:
 #endif
          i++;
          return KaiserMappedOverIntegerRange(dist + 0.5, alpha, 0, halfWidth + 1)*sinc(dist + 0.5);
-   };
-      NAMESPACE::generate(array_type::begin(), array_type::end(), lambda);
+      };
+      constexpr_funcs::generate(array_type::begin(), array_type::end(), lambda);
 #else //don't use a lambda for the coefficients
       //calculate the coefficients
-      for (size_t i = 0; i< table_width; i++)
+      for (size_t i = 0; i < table_width; i++)
       {
          size_t dist = (i < halfWidth) ? (halfWidth - i - 1) : (i - halfWidth);
          _Elems[i] = KaiserMappedOverIntegerRange(dist + 0.5, alpha, 0, halfWidth + 1)*sinc(dist + 0.5);
@@ -369,27 +314,7 @@ public:
 
 #endif
    }
-
-#if DEMO_ONLY
-   void init(double alpha) //does the same as the constructor but without constexpr functions
-   {
-      size_t halfWidth = table_width / 2;
-
-      //calculate the coefficients
-      size_t i = 0;
-      auto  lambda = [&]()
-      {
-         size_t dist = (i < halfWidth) ? (halfWidth - i - 1) : (i - halfWidth);
-         i++;
-         return non_constexpr_funcs::KaiserMappedOverIntegerRange(dist + 0.5, alpha, 0, halfWidth + 1)*non_constexpr_funcs::sinc(dist + 0.5);
-      };
-      std::generate(array_type::begin(), array_type::end(), lambda);
-   }
-
-#endif
-
 };
-
 
 template<typename SampleFormat, uint8_t numChannels, size_t table_width> class SRDoubler
 {
@@ -401,11 +326,11 @@ public:
       using Array::size;
       using Array::at;
 
-      SampleFrame() : Array()
+      constexpr SampleFrame() : Array()
       {
       }
 
-      SampleFrame operator* (const double factor) const
+      constexpr SampleFrame operator* (const double factor) const
       {
          SampleFrame outFrame;
 
@@ -415,7 +340,7 @@ public:
          return outFrame;
       }
 
-      SampleFrame& operator+= (const SampleFrame& frame)
+      constexpr SampleFrame& operator+= (const SampleFrame& frame)
       {
          for (size_type index = 0; index < size(); index++)
             at(index) += frame[index];
@@ -429,7 +354,7 @@ public:
    using size_type = typename FrameVector::size_type;
    using index_type = typename FrameSpan::index_type;
 
-   SRDoubler(const FrameSpan& in_span, const KeiserFilterType& filter) : m_in_span{ in_span }, m_filter{ filter }
+   constexpr SRDoubler(const FrameSpan& in_span, const KeiserFilterType& filter) : m_in_span{ in_span }, m_filter{ filter }
    {
    }
 
@@ -440,7 +365,9 @@ private:
 
    const int halfWidth = table_width / 2;
 
-   const SampleFrame& getInputFrame(ptrdiff_t index) const
+   SampleFrame m_null_frame {};
+
+   constexpr const SampleFrame& getInputFrame(ptrdiff_t index)  const
    {
       if (index >= 0 && index < m_in_span.size())
       {
@@ -448,12 +375,11 @@ private:
       }
       else
       {
-         static const SampleFrame null_frame;
-         return null_frame;
+         return m_null_frame;
       }
    }
 
-   SampleFrame getInterpolatedFrame(ptrdiff_t index) const
+   constexpr const SampleFrame getInterpolatedFrame(ptrdiff_t index) const
    {
       SampleFrame outFrame;
 
@@ -469,7 +395,7 @@ private:
 
 public:
 
-   FrameVector Run()
+   FrameVector Run() const
    {
       FrameVector output(2 * m_in_span.size());
 
@@ -483,6 +409,19 @@ public:
       }
 
       return output;
+   }
+
+   constexpr void Run(FrameSpan& out_span)
+   {
+      size_type j = 0;
+
+      for (index_type i = 0; i < m_in_span.size(); i++)
+      {
+         //alternate input and interpolated samples
+         out_span[j++] = getInputFrame(i);
+         out_span[j++] = getInterpolatedFrame(i);
+      }
+
    }
 };
 
