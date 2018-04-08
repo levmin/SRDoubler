@@ -58,7 +58,9 @@ namespace non_constexpr_funcs {
 template <size_t table_width> class CDemoFilter :public CFilter<table_width>
 {
 public:
+#ifndef __FUNCDNAME__   //Microsoft compiler detected, it doesn't like this using directive
    using typename CFilter<table_width>::array_type;
+#endif
    void init(double alpha) //does the same as the constructor but without constexpr functions
    {
       size_t halfWidth = table_width / 2;
