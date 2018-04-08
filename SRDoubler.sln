@@ -7,16 +7,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SRDoubler", "SRDoubler.vcxp
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
+		Rel_Clang|x64 = Rel_Clang|x64
 		Rel_Extreme|x64 = Rel_Extreme|x64
 		Rel_F_Upsampler|x64 = Rel_F_Upsampler|x64
 		Rel_Intel|x64 = Rel_Intel|x64
 		Rel_MSVC|x64 = Rel_MSVC|x64
-		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Debug|x64.ActiveCfg = Debug|x64
-		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Debug|x64.Build.0 = Debug|x64
+		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_Clang|x64.ActiveCfg = Rel_Clang|x64
+		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_Clang|x64.Build.0 = Rel_Clang|x64
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_Extreme|x64.ActiveCfg = Rel_Extreme|x64
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_Extreme|x64.Build.0 = Rel_Extreme|x64
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_F_Upsampler|x64.ActiveCfg = Rel_F_Upsampler|x64
@@ -25,8 +24,6 @@ Global
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_Intel|x64.Build.0 = Rel_Intel|x64
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_MSVC|x64.ActiveCfg = Rel_MSVC|x64
 		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Rel_MSVC|x64.Build.0 = Rel_MSVC|x64
-		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Release|x64.ActiveCfg = Release|x64
-		{6D120CEE-1E98-4F68-9E07-50B6700EDF3C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
