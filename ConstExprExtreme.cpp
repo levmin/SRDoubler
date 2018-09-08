@@ -1,19 +1,20 @@
 /*
-ConstExprDemo
+   ConstExprDemo
 
-This program shows how to use constexpr C++ functionality for compile-time calculation of digital filter coefficients.
+   This program shows how to use constexpr C++ functionality for compile-time calculation of digital filter coefficients 
+   as well as the very digital filtration
 
-Copyright © 2018 Lev Minkovsky
+   Copyright © 2018 Lev Minkovsky
 
-This software is licensed under the MIT License (MIT).
+   This software is licensed under the MIT License (MIT).
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+   THE SOFTWARE.
 
 */
 #include "ConstExprDemo.h"
@@ -58,9 +59,7 @@ namespace non_constexpr_funcs {
 template <size_t table_width> class CDemoFilter :public CFilter<table_width>
 {
 public:
-#ifndef __FUNCDNAME__   //Microsoft compiler detected, it doesn't like this using directive
-   using typename CFilter<table_width>::array_type;
-#endif
+   using array_type = typename CFilter<table_width>::array_type;
    void init(double alpha) //does the same as the constructor but without constexpr functions
    {
       size_t halfWidth = table_width / 2;

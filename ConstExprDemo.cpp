@@ -1,5 +1,5 @@
 /*
-   constexprDemo
+   ConstExprDemo
 
    This program shows how to use constexpr C++ functionality for compile-time calculation of digital filter coefficients. 
 
@@ -57,10 +57,8 @@ namespace non_constexpr_funcs {
 template <size_t table_width> class CDemoFilter :public CFilter<table_width>
 {
 public:
-#ifndef __FUNCDNAME__   //Microsoft compiler detected, it doesn't like this using directive
-   using typename CFilter<table_width>::array_type;
-#endif
-#if defined(__EDG__) || defined(__FUNCDNAME__) //Intel and Microsoft compilers want this constructor, Clang and GCC don't
+   using array_type = typename CFilter<table_width>::array_type;
+#ifdef __EDG__  //Intel compiler needs this
    CDemoFilter(double alpha) :CFilter(alpha) {}
 #endif
    void init(double alpha) //does the same as the constructor but without constexpr functions
@@ -94,9 +92,13 @@ constexpr size_t SAMPLES_TO_COMPARE = CD_SAMPLING_RATE * 2 * (DEMO_SOUND_DURATIO
 int main(int argc, char ** argv)
 {
    //create an appropriate Keiser window filter
-   constexpr static CFilter<TABLE_WIDTH> KEISER_FILTER{ ALPHA };
+#ifndef __EDG__ //Intel compiler does not handle constexpr sufficiently well
+    constexpr
+#endif
+              static CFilter<TABLE_WIDTH> KEISER_FILTER{ ALPHA };
+
    static_assert(sizeof(KEISER_FILTER));
-   
+
    //create another, runtime constructed filter to compare the coefficients to
    
    CDemoFilter<TABLE_WIDTH> test_filter{ ALPHA };

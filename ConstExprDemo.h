@@ -27,36 +27,6 @@
 constexpr double PI = 3.14159265358979323846264338327950288L;
 
 /*
-   Compiler analysis
-*/
-#ifndef TEST_FOR_constexpr_SUPPORT 
-   #ifdef __FUNCDNAME__ //don't test with Microsoft compiler
-      #define TEST_FOR_constexpr_SUPPORT 0
-   #else
-      #define TEST_FOR_constexpr_SUPPORT 1
-   #endif
-#endif
-
-#if TEST_FOR_constexpr_SUPPORT 
-   #if defined(__cpp_constexpr)
-      #if __cpp_constexpr < 201603 //Compiler constexpr support is not sufficient
-         #pragma message("\n")
-         #pragma message("WARNING!!!!!!!!!!!!!!!!!!!!!!!!!\n")
-         #pragma message("constexpr lambda expressions are not available. Compiling without the lambdas\n")
-         #pragma message("\n")
-         #define USE_constexpr_LAMBDA 0
-      #else
-         #define USE_constexpr_LAMBDA 1
-      #endif
-   #else
-      #error "__cpp_constexpr is not defined!"
-   #endif
-#else
-   #define USE_constexpr_LAMBDA 0
-#endif
-
-
-/*
    constexpr functions
 */
 
@@ -66,24 +36,6 @@ namespace constexpr_funcs {
    {
       return (x >= 0) ? x : -x;
    }
-
-#if !USE_constexpr_LAMBDA
-   inline constexpr double powerOfTen(int num)
-   {
-      double rst = 1.0;
-      if (num >= 0) {
-         for (int i = 0; i < num; i++) {
-            rst *= 10.0;
-         }
-      }
-      else {
-         for (int i = 0; i < (0 - num); i++) {
-            rst *= 0.1;
-         }
-      }
-      return rst;
-   };
-#endif
 
    inline constexpr double sqrt(double a)
    {
@@ -97,7 +49,6 @@ namespace constexpr_funcs {
       int max = 8;	// to define maximum digit 
       double j = 1.0;
 
-#if USE_constexpr_LAMBDA
       constexpr auto powerOfTen = [](int num) -> double
       {
          double rst = 1.0;
@@ -114,7 +65,6 @@ namespace constexpr_funcs {
          return rst;
       };
 
-#endif
       
       for (int i = max; i > 0; i--) {
          // value must be bigger then 0
@@ -286,33 +236,15 @@ public:
       static_assert(table_width % 2 == 0, "Table_width should be an even number");
       size_t halfWidth = table_width / 2;
 
-#if USE_constexpr_LAMBDA
       //calculate the coefficients
       size_t i = 0;
       auto  lambda = [&]()
       {
-#ifdef __FUNCDNAME__   //Microsoft compiler detected, a walkaround for a bug with tetriary operators in constexpr lambdas
-         size_t dist = 0;
-         if (i < halfWidth)
-            dist = halfWidth - i - 1;
-         else
-            dist = i - halfWidth;
-#else
-         size_t dist = (i < halfWidth) ? (halfWidth - i - 1) : (i - halfWidth);
-#endif
+		 size_t dist = (i < halfWidth) ? (halfWidth - i - 1) : (i - halfWidth);
          i++;
          return KaiserMappedOverIntegerRange(dist + 0.5, alpha, 0, halfWidth + 1)*sinc(dist + 0.5);
       };
       constexpr_funcs::generate(array_type::begin(), array_type::end(), lambda);
-#else //don't use a lambda for the coefficients
-      //calculate the coefficients
-      for (size_t i = 0; i < table_width; i++)
-      {
-         size_t dist = (i < halfWidth) ? (halfWidth - i - 1) : (i - halfWidth);
-         _Elems[i] = KaiserMappedOverIntegerRange(dist + 0.5, alpha, 0, halfWidth + 1)*sinc(dist + 0.5);
-      };
-
-#endif
    }
 };
 
