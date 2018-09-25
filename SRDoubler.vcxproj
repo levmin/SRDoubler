@@ -99,31 +99,37 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libsndfile\lib64;$(LibraryPath)</LibraryPath>
+    <TargetName>SrDoubler-Clang</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MSVC_Extreme|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libsndfile\lib64;$(LibraryPath)</LibraryPath>
+    <TargetName>SRDoubler-MSVC-Extreme</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Clang_Extreme|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libsndfile\lib64;$(LibraryPath)</LibraryPath>
+    <TargetName>SrDoubler-Clang-Extreme</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Intel|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libsndfile\lib64;$(LibraryPath)</LibraryPath>
+    <TargetName>SrDoubler-Intel</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MSVC|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libsndfile\lib64;$(LibraryPath)</LibraryPath>
+    <TargetName>SrDoubler-MSVC</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='File_Upsampler|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libsndfile\lib64;$(LibraryPath)</LibraryPath>
+    <TargetName>SrDoubler</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='Clang|x64'">
     <ClangClAdditionalOptions>-m64 -fmsc-version=1912 -Qunused-arguments  -Xclang -std=c++17 -Xclang -fconstexpr-steps -Xclang -1</ClangClAdditionalOptions>
@@ -144,9 +150,10 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>
       </AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,8 +163,12 @@
       <StackReserveSize>100000000</StackReserveSize>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+      <Command>del /Q $(SolutionDir)\Staging
+\*.exe
+copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+
 copy /Y $(TargetPath) $(SolutionDir)\Staging
+
 if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.wav $(SolutionDir)\Staging</Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -177,8 +188,9 @@ if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.w
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/constexpr:steps 2147483647</AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -188,8 +200,12 @@ if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.w
       <StackReserveSize>100000000</StackReserveSize>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+      <Command>del /Q $(SolutionDir)\Staging
+\*.exe
+copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+
 copy /Y $(TargetPath) $(SolutionDir)\Staging
+
 if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.wav $(SolutionDir)\Staging</Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -209,9 +225,10 @@ if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.w
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>
       </AdditionalOptions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -221,8 +238,12 @@ if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.w
       <StackReserveSize>100000000</StackReserveSize>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+      <Command>del /Q $(SolutionDir)\Staging
+\*.exe
+copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+
 copy /Y $(TargetPath) $(SolutionDir)\Staging
+
 if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.wav $(SolutionDir)\Staging</Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -245,8 +266,8 @@ if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.w
       <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
       <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
       <CCppSupport>Cpp17Support</CCppSupport>
-      <GenerateAlternateCodePaths>None</GenerateAlternateCodePaths>
       <UseProcessorExtensions>HOST</UseProcessorExtensions>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -256,8 +277,12 @@ if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.w
       <StackReserveSize>100000000</StackReserveSize>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+      <Command>del /Q $(SolutionDir)\Staging
+\*.exe
+copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+
 copy /Y $(TargetPath) $(SolutionDir)\Staging
+
 if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.wav $(SolutionDir)\Staging</Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -276,9 +301,10 @@ if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.w
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/constexpr:steps 100000000</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -288,8 +314,12 @@ if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.w
       <StackReserveSize>100000000</StackReserveSize>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+      <Command>del /Q $(SolutionDir)\Staging
+\*.exe
+copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+
 copy /Y $(TargetPath) $(SolutionDir)\Staging
+
 if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.wav $(SolutionDir)\Staging</Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -314,6 +344,8 @@ if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.w
       <Parallelization>true</Parallelization>
       <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
       <UseProcessorExtensions>HOST</UseProcessorExtensions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -323,8 +355,12 @@ if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.w
       <StackReserveSize>100000000</StackReserveSize>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+      <Command>del /Q $(SolutionDir)\Staging
+\*.exe
+copy /Y $(SolutionDir)\libsndfile\bin64\libsndfile-1.dll $(SolutionDir)\Staging
+
 copy /Y $(TargetPath) $(SolutionDir)\Staging
+
 if not exist $(SolutionDir)\Staging\input.wav copy $(SolutionDir)\sample\input.wav $(SolutionDir)\Staging</Command>
     </PostBuildEvent>
     <PostBuildEvent>

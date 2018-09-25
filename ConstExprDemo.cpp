@@ -58,9 +58,8 @@ template <size_t table_width> class CDemoFilter :public CFilter<table_width>
 {
 public:
    using array_type = typename CFilter<table_width>::array_type;
-#ifdef __EDG__  //Intel compiler needs this
-   CDemoFilter(double alpha) :CFilter(alpha) {}
-#endif
+   CDemoFilter(double alpha) :CFilter<table_width>(alpha) {}
+
    void init(double alpha) //does the same as the constructor but without constexpr functions
    {
       size_t halfWidth = table_width / 2;
@@ -92,10 +91,13 @@ constexpr size_t SAMPLES_TO_COMPARE = CD_SAMPLING_RATE * 2 * (DEMO_SOUND_DURATIO
 int main(int argc, char ** argv)
 {
    //create an appropriate Keiser window filter
-#ifndef __EDG__ //Intel compiler does not handle constexpr sufficiently well
-    constexpr
+#ifdef __ICL //Intel compiler does not handle constexpr sufficiently well
+#define CONSTEXPR  
+#else
+#define CONSTEXPR constexpr
 #endif
-              static CFilter<TABLE_WIDTH> KEISER_FILTER{ ALPHA };
+   CONSTEXPR static CFilter<TABLE_WIDTH> KEISER_FILTER{ ALPHA };
+#undef CONSTEXPR 
 
    static_assert(sizeof(KEISER_FILTER));
 
